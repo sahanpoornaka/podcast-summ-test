@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import YouTube from 'react-youtube';
 import { Container } from "reactstrap";
-import io from "socket.io-client"
 
 import TableContainer from './TableContainer';
 import {SelectColumnFilter} from './filters';
@@ -17,47 +16,11 @@ const App = () => {
     const [taskId, setTaskId] = useState('');
     const [data, setData] = useState([]);
 
-    const [tmpVar, setTmpVar] = useState(0);
-    const [messages, setMessages] = useState([]);
-
     // Play All Properties
     let isPlaying = false;
     let isPlayAllSelected = false;
     let timestamp_list = [];
     let currentIndex = 0;
-
-    // Socket Properties
-    // const endPoint = "http://localhost:5000";
-    const endPoint = "ec2-23-20-241-73.compute-1.amazonaws.com:5000";
-    // connect with server using socket.io
-    const socket = io.connect(`${endPoint}`, {forceNew:true})
-
-    useEffect(() => {
-        getMessages();
-    }, [messages.length]
-    );
-
-    // This method will be called first time App Renders and Everytime Messages Length Changes
-    const getMessages = () => {
-        socket.on("message", responseData => {
-            // setTmpVar(tmpVar+1);
-            setMessages(...messages, responseData)
-            console.log(responseData);
-            
-            // if(responseData['status'] === 'success') {
-            //     console.log("Data Recieved Success")
-            //     setData(responseData['result'])
-            // } else {
-            //     console.log(responseData)
-            // }
-            // if(msg['step']===1){
-            //     setData(msg)
-            //     console.log(msg)
-            // } else {
-            //     console.log(msg)
-            // }
-        });        
-    };
 
 
     // Media Player
@@ -180,30 +143,22 @@ const App = () => {
         setEmbedId(embedId);
     };
     
-    // const sendSubmitRequest = async () => {
-    // try {
-    //     const resp = await axios.get('http://localhost:5000/youtube/submit-job/'+embedId);
-    //     if (resp.status === 202) {
-    //         setTaskId(resp.data.task_id)
-    //         console.log(resp.data);
-    //         alert("Job Submision Success..")
-    //     } else {
-    //         alert("Job Submision Failed... \nCheck If the Video URL Is Correct")
-    //     }
-
-    // } catch (err) {
-    //     // Handle Error Here
-    //     console.error(err);
-    // }
-    // };
-
-    const sendSubmitRequest = async() => {
-        try {
-            socket.emit("message", embedId);
-        } catch(err) {
-            console.error(err)
+    const sendSubmitRequest = async () => {
+    try {
+        const resp = await axios.get('http://localhost:5000/youtube/submit-job/'+embedId);
+        if (resp.status === 202) {
+            setTaskId(resp.data.task_id)
+            console.log(resp.data);
+            alert("Job Submision Success..")
+        } else {
+            alert("Job Submision Failed... \nCheck If the Video URL Is Correct")
         }
+
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
     }
+    };
     
     const checkJobStatus = async () => {
     try {
@@ -299,13 +254,12 @@ const App = () => {
           </div>
           <div className='submit-btn-container'>
             <button className='submit-btn' onClick={sendSubmitRequest}>Submit Job</button>
-            {/* <button className='submit-btn' onClick={checkJobStatus}>Check Job Status</button> */}
-            {/* <button onClick={e=> {setTmpVar(tmpVar+1)}}>Check Status</button> */}
+            <button className='submit-btn' onClick={checkJobStatus}>Check Job Status</button>
           </div>
             <div className="player-control-container">
                 <SkipPreviousRounded style={{ fontSize: 40 }} onClick={e=>handlePreviousTrack()}/>
                 {/* <PlaylistPlayRounded style={{ fontSize: 40 }} onClick={e=>playAllSelected()}/> */}
-                <span onClick={e=>playAllSelected()}>Play Selected</span>
+                <div onClick={e=>playAllSelected()}>Play All Selected</div>
                 <StopRounded style={{ fontSize: 40 }} onClick={e=>{isPlayAllSelected=false;currentIndex=0;mediaPlayer.stopVideo()}}/>
                 <SkipNextRounded style={{ fontSize: 40 }} onClick={e=>handleNextTrack()}/>
                 
