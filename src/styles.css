@@ -60,14 +60,14 @@
     background-color: #008CBA;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 15px 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
     margin: 1%;
     border-radius: 6px;
-    width: 15%;
+    width: 20%;
   }
   .submit-btn:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.05), 0 17px 50px 0 rgba(0,0,0,0.19);
@@ -76,6 +76,22 @@
   .player-control-container {
     margin: 0%;
   } 
+
+  .play-all-selected-btn {
+    background-color: #008CBA;
+    color: white;
+    /* border: 2px solid black; */
+    border: none;
+    /* color: rgb(20, 20, 20); */
+    padding: 5px 7px;
+    text-align: center;
+    text-decoration: none;
+    /* display: inline-block; */
+    font-size: 14px;
+    margin: 1%;
+    border-radius: 6px;
+    /* width: 15%; */
+  }
 
   .start-time-text {
     color: blue;
